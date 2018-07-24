@@ -1,11 +1,21 @@
-require('dotenv').config();
-const { createServer } = require('http');
-require('./lib/utils/connect');
-const app = require('./lib/app');
+const Hapi = require('hapi');
 
-const PORT = process.env.PORT || 3000;
-const server = createServer(app);
-
-server.listen(PORT, () => {
-    console.log('server running on', server.address().port);
+const server = Hapi.Server({ 
+    port: '8000',
+    host: 'localhost'
 });
+
+const init = async() => {
+    
+    await server.start();
+    console.log(`Server running at: ${server.info.uri}`);
+};
+
+process.on('unhandledRejection', (err) => {
+
+    console.log(err);
+    process.exit(1);
+});
+
+init();
+
