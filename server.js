@@ -21,13 +21,19 @@ server.route([
         path: '/api/movies',
         handler: function(req, res) {
             return Movie.find();
-                // .exec()
-                // .then((movie) => {
-                //     return { movie: movie };
-                // })
-                // .catch((err) => {
-                //     return { err: err }
-                // });
+        }
+    },
+    {
+        method: 'GET',
+        path: '/api/movies/{id}',
+        handler: function(req, res) {
+            return Movie.findById(req.params.id).then(movie => {
+                if(!movie) return { message: 'Movie not found' };
+                return { movie: movie };
+            })
+            .catch((err) => {
+                return { err: err }
+            });
         }
     },
     {
