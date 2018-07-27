@@ -2,17 +2,13 @@ const Hapi = require('hapi');
 const Mongoose = require('mongoose');
 const Movie = require('./lib/models/movie');
 
-Mongoose.connect('mongodb://localhost:27017/ghibli');
-Mongoose.connection.once('open', () => {
-    console.log('connected to MongoDB database');
-});
 
 const server = Hapi.Server({ 
     port: '8000',
     host: 'localhost'
 });
 
-server.route(
+server.route([
     {
         method: 'GET',
         path: '/',
@@ -24,20 +20,51 @@ server.route(
         method: 'GET',
         path: '/api/movies',
         handler: function(req, res) {
-            return Movie.find({});
-            // Movie.find(req.query)
-            // .select('name')
-            // .lean()
-            // .then(movies => {
-            //     reply.res.json(movies);
-            // });
+            return Movie.find();
+                // .exec()
+                // .then((movie) => {
+                //     return { movie: movie };
+                // })
+                // .catch((err) => {
+                //     return { err: err }
+                // });
         }
-    }
-);
+    },
+    /* {
+        method: 'POST',
+        path: '/api/movies',
+        handler: function(req, reply) {
+            const { name, director, composer, year, voices, runtime, rating, isPixar, languages, keywords } = req.payload;
+            const movieData = {
+                name,
+                director,
+                composer,
+                year,
+                voices,
+                runtime,
+                rating,
+                isPixar,
+                languages,
+                keywords
+            }
+
+            return Movie.create(movieData).then((movie) => {
+                return { message: 'Movie created successfully', movie: movie };
+            })
+            .catch((err) => {
+                return { err: err }
+            });
+        }
+    } */
+]);
 
 const init = async() => {
     
     await server.start();
+    Mongoose.connect('mongodb://localhost:27017/ghibli', { useNewUrlParser: true });
+    Mongoose.connection.once('open', () => {
+    console.log('connected to MongoDB database');
+});
     console.log(`Server running at: ${server.info.uri}`);
 };
 
