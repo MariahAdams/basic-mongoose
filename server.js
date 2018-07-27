@@ -30,7 +30,7 @@ server.route([
                 // });
         }
     },
-    /* {
+    {
         method: 'POST',
         path: '/api/movies',
         handler: function(req, reply) {
@@ -55,7 +55,7 @@ server.route([
                 return { err: err }
             });
         }
-    } */
+    }
 ]);
 
 const init = async() => {
